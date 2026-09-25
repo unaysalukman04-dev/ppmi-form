@@ -108,7 +108,7 @@ export const FORM_TEMPLATES: FormTemplate[] = [
       return {
         title: "Customer feedback",
         schema: layout(
-          { title: "Share your feedback", button: "Start" },
+          { title: "Share your feedback 😊", button: "Start" },
           questions,
           [{ indexes: [0] }, { indexes: [1, 2] }],
           { title: "Thank you", description: "Your feedback helps us improve." },
