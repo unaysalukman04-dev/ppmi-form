@@ -495,31 +495,68 @@ function Field(props: {
   }
   if (q.type === "select" || q.type === "multi_select") {
     const selected = q.type === "select" ? value : Array.isArray(value) ? value : [];
+    const isOtherValue = (v: unknown) => typeof v === "string" && (v === "Lainnya" || v.startsWith("Lainnya: "));
+    const otherText = (v: unknown) => (typeof v === "string" && v.startsWith("Lainnya: ") ? v.slice("Lainnya: ".length) : "");
+    const selectedHasOther =
+      q.type === "select" ? isOtherValue(selected) : (selected as string[]).some(isOtherValue);
+    const currentOtherText =
+      q.type === "select" ? otherText(selected) : otherText((selected as string[]).find(isOtherValue));
+
     return (
-      <ul className="grid gap-2">
-        {q.options.map((opt, i) => {
-          const on = q.type === "select" ? selected === opt : (selected as string[]).includes(opt);
-          return (
-            <li key={opt}>
-              <Button
-                type="button"
-                variant={on ? "default" : "outline"}
-                className="h-auto w-full justify-start gap-3 py-3"
-                onClick={() => {
-                  if (q.type === "select") onChange(opt);
-                  else {
-                    const cur = Array.isArray(value) ? (value as string[]) : [];
-                    onChange(cur.includes(opt) ? cur.filter((x) => x !== opt) : [...cur, opt]);
-                  }
-                }}
-              >
-                <Kbd>{letter(i)}</Kbd>
-                {opt}
-              </Button>
-            </li>
-          );
-        })}
-      </ul>
+      <div className="grid gap-2">
+        <ul className="grid gap-2">
+          {q.options.map((opt, i) => {
+            const isOtherOption = opt === "Lainnya";
+            const on = isOtherOption
+              ? selectedHasOther
+              : q.type === "select"
+                ? selected === opt
+                : (selected as string[]).includes(opt);
+            return (
+              <li key={opt}>
+                <Button
+                  type="button"
+                  variant={on ? "default" : "outline"}
+                  className="h-auto w-full justify-start gap-3 py-3"
+                  onClick={() => {
+                    if (q.type === "select") {
+                      onChange(isOtherOption ? "Lainnya" : opt);
+                    } else {
+                      const cur = Array.isArray(value) ? (value as string[]) : [];
+                      if (isOtherOption) {
+                        onChange(selectedHasOther ? cur.filter((x) => !isOtherValue(x)) : [...cur, "Lainnya"]);
+                      } else {
+                        onChange(cur.includes(opt) ? cur.filter((x) => x !== opt) : [...cur, opt]);
+                      }
+                    }
+                  }}
+                >
+                  <Kbd>{letter(i)}</Kbd>
+                  {opt}
+                </Button>
+              </li>
+            );
+          })}
+        </ul>
+        {selectedHasOther && (
+          <Input
+            autoFocus
+            className="h-11 text-base"
+            placeholder="Tuliskan jawabanmu"
+            value={currentOtherText}
+            onChange={(e) => {
+              const text = e.target.value;
+              if (q.type === "select") {
+                onChange(text ? `Lainnya: ${text}` : "Lainnya");
+              } else {
+                const cur = Array.isArray(value) ? (value as string[]) : [];
+                const next = cur.map((x) => (isOtherValue(x) ? (text ? `Lainnya: ${text}` : "Lainnya") : x));
+                onChange(next);
+              }
+            }}
+          />
+        )}
+      </div>
     );
   }
   const kinds = q.accept as FileKind[];
