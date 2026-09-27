@@ -340,7 +340,7 @@ function QuestionScreen(props: {
   const multi = props.questions.filter((q) => q.type !== "statement").length > 1;
   return (
     <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain">
-      <div className="mx-auto flex min-h-full w-full max-w-xl flex-col justify-center gap-4 px-6 py-16">
+      <div className="mx-auto flex min-h-full w-full max-w-xl flex-col justify-center-safe gap-4 px-6 py-16">
         <Button variant="ghost" size="sm" className="w-fit" type="button" aria-label="Back" onClick={props.back}>
           ← Back
         </Button>
