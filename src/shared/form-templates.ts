@@ -162,7 +162,7 @@ export const FORM_TEMPLATES: FormTemplate[] = [
   },
   {
     id: "support-request",
-    name: "Support request",
+    name: "Support request 👌",
     description: "Help desk intake with topic and priority.",
     build: () => {
       const questions = [
