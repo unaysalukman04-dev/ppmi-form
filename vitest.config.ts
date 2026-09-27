@@ -13,6 +13,7 @@ export default defineConfig(async () => {
           compatibilityDate: "2026-08-22",
           compatibilityFlags: ["nodejs_compat"],
           bindings: { TEST_MIGRATIONS: migrations },
+          d1Databases: ["FRESH_DB"],
         },
       }),
     ],

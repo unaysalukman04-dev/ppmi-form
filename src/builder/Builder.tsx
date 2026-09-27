@@ -542,6 +542,10 @@ export function Builder(props: Props) {
                   publishedIds.has(inspectQuestion.id)
                     ? undefined
                     : () => {
+                        const page = pages.find((p) => p.questionIds.includes(inspectQuestion.id));
+                        const ids = page?.questionIds ?? [];
+                        const at = ids.indexOf(inspectQuestion.id);
+                        const sibling = ids[at - 1] ?? ids[at + 1];
                         setSchema((s) => {
                           const n = normalizeFormSchema(s);
                           return normalizeFormSchema({
@@ -553,7 +557,7 @@ export function Builder(props: Props) {
                             })),
                           });
                         });
-                        setSelected("welcome");
+                        setSelected(sibling ? { questionId: sibling } : page ? { pageId: page.id } : "welcome");
                       }
                 }
               />
